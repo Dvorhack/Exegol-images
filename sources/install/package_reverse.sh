@@ -140,6 +140,27 @@ function install_pwninit() {
     add-to-list "pwninit,https://github.com/io12/pwninit,A tool for automating starting binary exploit challenges"
 }
 
+function install_ctfmate() {
+    colorecho "Installing CTFMate"
+    fapt elfutils patchelf 
+    git -C /opt/tools/ clone --depth 1 https://github.com/X3eRo0/CTFMate.git
+    cd /opt/tools/CTFMate || exit
+    pip3 install -r requirements.txt
+    chmod +x ctfmate.py
+    add-aliases ctfmate
+    add-history ctfmate
+    add-test-command "CTFMate --help"
+    add-to-list "CTFMate,https://github.com/X3eRo0/CTFMate/tree/main,A tool for automating starting binary exploit challenges"
+}
+
+function install_lief() {
+    # CODE-CHECK-WHITELIST=add-aliases,add-history
+    colorecho "Installing Lief"
+    pip3 install lief
+    add-test-command "python3 -c 'import lief'"
+    add-to-list "lief,https://lief.re/doc/latest/,provide a cross platform library which can parse, modify and abstrac binary headers"
+}
+
 # Package dedicated to reverse engineering tools
 function package_reverse() {
     set_env
@@ -156,6 +177,8 @@ function package_reverse() {
     install_ida
     install_jd-gui                  # Java decompiler
     install_pwninit                 # Tool for automating starting binary exploit
+    install_ctfmate                 # Tool for automating starting binary exploit
+    install_lief                    # Frmawork for binary header editing/parsing
     end_time=$(date +%s)
     local elapsed_time=$((end_time - start_time))
     colorecho "Package reverse completed in $elapsed_time seconds."
